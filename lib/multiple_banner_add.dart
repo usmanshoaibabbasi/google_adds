@@ -16,7 +16,6 @@ class _MultipleBannerAddState extends State<MultipleBannerAdd> {
   late List<Object> dataads;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     datas = [];
     for (int i = 1; i < 20; i++) {

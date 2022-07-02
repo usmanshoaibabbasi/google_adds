@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -9,13 +10,16 @@ class NativeAdClass extends StatefulWidget {
 }
 
 class _NativeAdClassState extends State<NativeAdClass> {
+  /// Native Ad
   late NativeAd _ad;
   bool isLoaded = false;
 
   @override
   void initState() {
     super.initState();
-    print('init state');
+    if (kDebugMode) {
+      print('init state');
+    }
     loadNativeAd();
   }
 
@@ -25,27 +29,31 @@ class _NativeAdClassState extends State<NativeAdClass> {
     _ad.dispose();
     super.dispose();
   }
+
   void loadNativeAd() {
     _ad = NativeAd(
         request: const AdRequest(),
+
         ///This is a test adUnitId make sure to change it
         adUnitId: 'ca-app-pub-3940256099942544/2247696110',
         factoryId: 'listTile',
-        listener: NativeAdListener(
-            onAdLoaded: (ad){
-              setState(() {
-                isLoaded = true;
-              });
-            },
-            onAdFailedToLoad: (ad, error){
-              ad.dispose();
-              print('failed to load the ad ${error.message}, ${error.code}');
-            }
-        )
-    );
+        listener: NativeAdListener(onAdLoaded: (ad) {
+          if (kDebugMode) {
+            print('Ad loaded');
+          }
+          setState(() {
+            isLoaded = true;
+          });
+        }, onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+          if (kDebugMode) {
+            print('failed to load the ad ${error.message}, ${error.code}');
+          }
+        }));
 
     _ad.load();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,33 +62,20 @@ class _NativeAdClassState extends State<NativeAdClass> {
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                  itemCount: 10,
-                  itemBuilder: (context, index){
-                    if(isLoaded && index == 3){
-                      return Container(
-                        child: AdWidget(ad: _ad,),
-                        alignment: Alignment.center,
-                        height: 170,
-                        color: Colors.black12,
-                      );
-                    }else{
-                      return ListTile(
-                        title: Text('Item ${index + 1}'),
-                        leading: const FlutterLogo(size: 25,),
-                        subtitle: Text('Sub Title for item ${index + 1}'),
-                      );
-                    }
-
-                  }
-              ),
-            ),
-          ],
-        ),
+        padding: const EdgeInsets.all(8.0),
+        child: Center(
+            child: isLoaded
+                ? Container(
+                    height: 400,
+                    color: Colors.black12,
+                    child: AdWidget(
+                      ad: _ad,
+                    ),
+                  )
+                : Container(
+                    height: 400,
+                    color: Colors.red,
+                  )),
       ),
     );
   }

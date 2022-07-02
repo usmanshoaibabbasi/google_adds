@@ -1,5 +1,5 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:google_adds/native_ad_screen.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class BannerAddClass extends StatefulWidget {
@@ -22,7 +22,9 @@ class _BannerAddClassState extends State<BannerAddClass> {
         setState(() {
           isLoaded = true;
         });
-        print('is loaded is loaded is loaded is loaded');
+        if (kDebugMode) {
+          print('is loaded is loaded is loaded is loaded');
+        }
       }, onAdFailedToLoad: (ad, error) {
         ad.dispose();
       }),
@@ -37,9 +39,7 @@ class _BannerAddClassState extends State<BannerAddClass> {
       appBar: AppBar(
         title: const Center(child: Text('Banner Adds')),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
+      body: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         isLoaded
             ? SizedBox(
                 height: 50,
